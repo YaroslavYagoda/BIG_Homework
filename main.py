@@ -14,8 +14,6 @@
 
 
 def calculate_average(grades):
-    global average_score_all
-    average_score_all.append(sum(grades))
     return sum(grades) / len(grades)
 
 
@@ -23,47 +21,49 @@ def successful_unsuccessful(average_score):
     return 'Успешен' if average_score >= 75 else 'Отстающий'
 
 
-def calculate_average_all(average_score_all):
-    return sum(average_score_all) / len(average_score_all)
+def expulsion_student(students_list_group):
+    student_for_expulsion = {'average_score': 1_000_000}
+    for student in students_list_group:
+        if student['average_score'] < student_for_expulsion['average_score']:
+            student_for_expulsion = student.copy()
+    print(f'Студент {student_for_expulsion['name']}, со средним баллом {student_for_expulsion['average_score']:.2f} '
+          f'отчислен!\n')
+    students_list_group.remove(student_for_expulsion)
+    return students_list_group
 
 
-def expulsion_student(average_score_all):
-    global students_list_group
-    student_index = average_score_all.index(min(average_score_all))
-    print(f'Студент {students_list_group[student_index]["name"]} изгнан!\n')
-    students_list_group.pop(student_index)
-
-
-def enroll_student():
-    global students_list_group
+def enroll_student(students_list_group):
     name = input('Введите имя нового студента:')
     grades_student = []
     for i in range(1, 4):
         grades_student.append(int(input(f'Введите оценку № {i}: ')))
-    students_list_group.append({'name': name, 'grades': grades_student})
+    students_list_group.append(
+        {'name': name, 'grades': grades_student, 'average_score': calculate_average(grades_student)})
     print(f'Студент {name} успешно зачислен!\n')
+    return students_list_group
 
 
-def print_group_result():
-    global average_score_all
+def print_group_result(students_list_group):
     average_score_all = []
+    print('Результаты успеваемости группы: ')
     for student in students_list_group:
-        average_score = calculate_average(student['grades'])
-        print(f'Студент: {student["name"]}\n'
-              f'Средний балл: {average_score:.2f}\n'
-              f'Статус: {successful_unsuccessful(average_score)}\n')
-    print(f'Средний балл за группу: {calculate_average_all(average_score_all):.2f}\n')
+        student['average_score'] = calculate_average(student['grades'])
+        average_score_all.append(student['average_score'])
+        print(f'Студент: {student['name']}\n'
+              f'Средний балл: {student['average_score']:.2f}\n'
+              f'Статус: {successful_unsuccessful(student['average_score'])}\n')
+    print(f'Средний балл за группу: {calculate_average(average_score_all):.2f}\n')
+    return students_list_group
 
 
-average_score_all = []
 students_list_group = [
     {'name': 'Yaroslav', 'grades': [80, 90, 100]},
     {'name': 'Alex', 'grades': [20, 30, 80]},
     {'name': 'Viktor', 'grades': [80, 85, 75]},
     {'name': 'Inna', 'grades': [10, 15, 12]},
 ]
+
 if __name__ == '__main__':
-    print_group_result()
-    expulsion_student(average_score_all)
-    enroll_student()
-    print_group_result()
+    students_list_group = print_group_result(students_list_group)
+    students_list_group = enroll_student(students_list_group)
+    students_list_group = expulsion_student(students_list_group)
