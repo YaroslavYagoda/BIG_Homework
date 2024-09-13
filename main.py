@@ -28,8 +28,8 @@ def expulsion_student(students_list_group):
             if student["average_score"] < student_for_expulsion['average_score']:
                 student_for_expulsion = student.copy()
         print(
-            f'\nСтудент {student_for_expulsion["name"]}, со средним баллом {student_for_expulsion["average_score"]:.2f} '
-            f'отчислен!\n')
+            f'\nСтудент {student_for_expulsion["name"]}, со средним баллом {student_for_expulsion["average_score"]:.2f}'
+            f' отчислен!\n')
         students_list_group.remove(student_for_expulsion)
     else:
         print('\nГруппа пустая (студенты не внесены в список)!!!\n')
